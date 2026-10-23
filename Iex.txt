@@ -1,0 +1,92 @@
+feap * * problem 1
+0,0,0,3,4,8
+
+! *, *, *, num dim, num dof, num nod per element
+
+!-------------------------BEGIN----------------------------
+parameter 
+  e  = 440.5d0
+  nu = 0.25
+  np = 1.
+  kd = 1.0
+  b=5.
+  a=2.
+  h=10.
+
+mate 1
+ user 15
+ e,nu,kd,np,1
+
+COOR
+include hc.nodes
+
+ELEM
+include hc.elems 
+
+cboun
+node 0. 10 0.  1 1 1 0
+node 0.  5 0.  1 0 0 0
+node 2. 10 0.  0 1 0 0
+
+eboun
+3 0 0 0 1 0
+3 h 0 0 1 0
+
+edisp 
+3 h 0 0 1. 0
+
+end
+!--------------
+!--------------
+TIE
+
+BATCH
+INITial DISP
+END
+1  1 0 0 0 kd 
+1630 0 0 0 0 kd
+
+BATCh
+   PROP
+   IDEN
+   dt,,0.01
+END
+2 2
+0 0  1. 2
+
+
+BATCh
+  plot pers,1
+  plot hide
+END
+0
+-1600 1000 500
+0 0 0
+
+BATCH
+  dt,,0.05
+!  auto,time,4,5,1000
+!  auto,dt,0.0000005,0.1
+END
+
+
+!inte
+
+batch
+ NOPR
+ loop,,100
+  time
+  loop,,20
+   tang,,1
+  next
+  plot range,0,1
+  plot stre,7
+  reac all
+  pview,time
+ next 
+end
+
+
+inte 
+
+stop
